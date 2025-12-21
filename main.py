@@ -10,7 +10,9 @@ from logger import log_state
 def main():
     # Initialize pygame using the pygame.init() function at the beginning of your program.
     pygame.init()
-    print(pygame.get_init())
+    
+    # This checks whether pygame has been properly initialised
+    # print(pygame.get_init())
 
 
     # Use pygame's display.set_mode function to get a new instance of GUI window:
@@ -27,11 +29,23 @@ def main():
     while True:
         log_state()
 
+        # Insert event "pump" within infinite loop
+        # essential in Mac OS
+        # This will check if the user has closed the window, 
+        # and exit the game loop if they do. 
+        # It will make the window's close button actually work
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
 
+        # screen is an instance of the object Surface
+        # fill() is a method of Surface
         screen.fill("black")
+
+        # display.flip() isn't really a method
+        # instead its a function imported from the pygame "module"
+        # (at least, that's how I understand it at the moment)
         pygame.display.flip()
 
     print(f"Starting Asteroids with pygame version {pygame.version.ver}")
