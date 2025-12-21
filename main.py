@@ -14,6 +14,14 @@ def main():
     # This checks whether pygame has been properly initialised
     # print(pygame.get_init())
 
+    # After initializing pygame, but before the game loop starts, create
+    # A new clock object using pygame.time.Clock.
+    clock = pygame.time.Clock()
+    # A dt variable set to 0
+    dt = 0
+
+
+
 
     # Use pygame's display.set_mode function to get a new instance of GUI window:
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -47,6 +55,14 @@ def main():
         # instead its a function imported from the pygame "module"
         # (at least, that's how I understand it at the moment)
         pygame.display.flip()
+
+        # At the end of each iteration of the game loop, 
+        # call the .tick() method on the clock object, 
+        # and pass it 60. 
+        # It will pause the game loop until 1/60th of a second has passed.
+        dt = clock.tick(60) / 1000
+        
+ 
 
     print(f"Starting Asteroids with pygame version {pygame.version.ver}")
     print(f"Screen width: {SCREEN_WIDTH}")
