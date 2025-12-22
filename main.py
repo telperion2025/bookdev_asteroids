@@ -1,6 +1,7 @@
 import pygame
 
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from player import Player
 
 # In main.py import the log_state function from the logger module 
 # that you created in the last assignment:
@@ -20,11 +21,14 @@ def main():
     # A dt variable set to 0
     dt = 0
 
-
-
-
     # Use pygame's display.set_mode function to get a new instance of GUI window:
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    # instantiate a Player object. You can pass these values 
+    # to the constructor to spawn it in the middle of the screen
+    # x = SCREEN_WIDTH / 2
+    # y = SCREEN_HEIGHT / 2
+    ship = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
     # Create the game loop
     # Use an infinite while loop for the game loop. At each iteration, it should:
@@ -51,6 +55,15 @@ def main():
         # fill() is a method of Surface
         screen.fill("black")
 
+        # Hook the update method into the game loop by calling 
+        # it on the player object each frame before rendering
+        ship.update(dt)
+
+        # we need to re-render the player on the screen each frame, 
+        # meaning inside our game loop. Use the player.draw(screen)
+        # method we just added to do so.
+        ship.draw(screen)
+
         # display.flip() isn't really a method
         # instead its a function imported from the pygame "module"
         # (at least, that's how I understand it at the moment)
@@ -62,7 +75,11 @@ def main():
         # It will pause the game loop until 1/60th of a second has passed.
         dt = clock.tick(60) / 1000
         
- 
+        # we need to re-render the player on the screen each frame, 
+        # meaning inside our game loop. Use the player.draw(screen)
+        # method we just added to do so.
+        ship.draw(screen)
+
 
     print(f"Starting Asteroids with pygame version {pygame.version.ver}")
     print(f"Screen width: {SCREEN_WIDTH}")
