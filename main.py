@@ -12,6 +12,12 @@ def main():
     # Initialize pygame using the pygame.init() function at the beginning of your program.
     pygame.init()
     
+    # Before the game loop starts, create two new empty groups in main.py:
+    #   updatable – this will hold all the objects that can be updated
+    #   drawable – this will hold all the objects that can be drawn
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+
     # This checks whether pygame has been properly initialised
     # print(pygame.get_init())
 
@@ -23,6 +29,10 @@ def main():
 
     # Use pygame's display.set_mode function to get a new instance of GUI window:
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    # Add the Player class to the updatable and drawable groups 
+    # before the player object instance is created
+    Player.containers = (updatable, drawable)
 
     # instantiate a Player object. You can pass these values 
     # to the constructor to spawn it in the middle of the screen
@@ -56,13 +66,22 @@ def main():
         screen.fill("black")
 
         # Hook the update method into the game loop by calling 
-        # it on the player object each frame before rendering
-        ship.update(dt)
+        # it on the updatable group of objects each frame before rendering
+        updatable.update(dt)
 
         # we need to re-render the player on the screen each frame, 
         # meaning inside our game loop. Use the player.draw(screen)
         # method we just added to do so.
-        ship.draw(screen)
+
+        # You can iterate over objects in a group just like
+        # any other collection in Python:
+        # e.g.
+        #   for thing in group:
+        #       thing.do_something(some_value)
+        ##
+        # Loop over all "drawables" and .draw() them individually.
+        for drawing in drawable:
+            drawing.draw(screen)
 
         # display.flip() isn't really a method
         # instead its a function imported from the pygame "module"
