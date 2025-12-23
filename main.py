@@ -1,12 +1,15 @@
 import pygame
+import sys
 
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
+from shot import Shot
 
 # In main.py import the log_state function from the logger module 
-# that you created in the last assignment:
-from logger import log_state
-
+# that you created in the last assignment
+from logger import log_event, log_state
 
 def main():
     # Initialize pygame using the pygame.init() function at the beginning of your program.
@@ -17,7 +20,9 @@ def main():
     #   drawable – this will hold all the objects that can be drawn
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
-
+    asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
+                                                    
     # This checks whether pygame has been properly initialised
     # print(pygame.get_init())
 
@@ -32,13 +37,18 @@ def main():
 
     # Add the Player class to the updatable and drawable groups 
     # before the player object instance is created
+    # Do the same for asteroids
     Player.containers = (updatable, drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
+    Shot.containers = (shots, drawable, updatable)
 
     # instantiate a Player object. You can pass these values 
     # to the constructor to spawn it in the middle of the screen
     # x = SCREEN_WIDTH / 2
     # y = SCREEN_HEIGHT / 2
     ship = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    field = AsteroidField()
 
     # Create the game loop
     # Use an infinite while loop for the game loop. At each iteration, it should:
@@ -69,6 +79,28 @@ def main():
         # it on the updatable group of objects each frame before rendering
         updatable.update(dt)
 
+        # After the "update" step in your game loop, 
+        # iterate over all the objects in your asteroids group. 
+        # Check if any of them collide with the player. 
+        # If a collision is detected:
+        #   Call log_event("player_hit").
+        #   Print Game over! to the console.
+        #   End the game immediately with sys.exit(). 
+        #   (Don't forget to import sys!)
+
+        for rock in asteroids:
+            if rock.collides_with(ship):
+                log_event("player_hit")
+                print("Game over!")
+                sys.exit()
+
+        for rock in asteroids:
+            for missile in shots:
+                if rock.collides_with(missile):
+                    log_event("asteroid_shot")
+                    rock.split()
+                    missile.kill()
+
         # we need to re-render the player on the screen each frame, 
         # meaning inside our game loop. Use the player.draw(screen)
         # method we just added to do so.
@@ -82,7 +114,7 @@ def main():
         # Loop over all "drawables" and .draw() them individually.
         for drawing in drawable:
             drawing.draw(screen)
-
+        
         # display.flip() isn't really a method
         # instead its a function imported from the pygame "module"
         # (at least, that's how I understand it at the moment)
